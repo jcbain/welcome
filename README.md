@@ -19,3 +19,10 @@ A research project in migrant sentiment
     - [Word2Vec](https://nlp.stanford.edu/projects/glove/) 
 - English
     - [GloVe](https://nlp.stanford.edu/projects/glove/)
+
+## Running the App
+```sh
+$ docker-compose build
+$ docker-compose up
+$ docker-compose exec server yarn db:migrate
+```

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 import DropDown from './DropDown';
 
@@ -19,8 +20,6 @@ const Form = styled.div`
     padding-top: 10px;
 `
 
-
-
 const dummyData = [
     {id: 1, label: 'montreal'},
     {id: 2, label: 'toronto'},
@@ -37,6 +36,12 @@ const SelectionForm = () => {
     const makeSelection = (id) => {
         setSelectedIndex(id)
     }
+
+    useEffect(() => {
+        axios.get('http://localhost:8000')
+            .then(res => console.log(res))
+            .catch(err => console.log(err))
+    }, [])
 
     return (
         <Container>

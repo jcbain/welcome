@@ -1,106 +1,123 @@
-const yargs = require('yargs');
-const { CronJob } = require('cron');
-const knex = require('knex');
-const knexConfig = require('./knexfile');
-const db = knex(knexConfig.development);
+const express = require('express')
+const cors = require('cors')
 
-const { insertIntoTweetsTable, insertIntoReferencedTweetsTable, insertIntoTweetsMetricsTable } = require('./queries/insertQueries');
-const { fetchTwitterGeoData } = require('./endpoint_calls/twitter_search_v2');
+const app = express()
+const port = 8000
 
-const start = Date.now();
-const intervals = {
-    s: "* * * * * *",
-    m: "* * * * *",
-    h: "* * * *"
-}
+app.use(cors())
 
-const argv = yargs
-    .option('query', {
-        description: 'query for twitter endpoint',
-        alias: 'q',
-        type: 'string'
-    })
-    .option('interval', {
-        description: 'how often to run the cron',
-        alias: 'i',
-        type: 'string'
-    })
-    .option('duration', {
-        description: 'duration in minutes to run collection for',
-        alias: 'd',
-        type: 'number'
-    })
-    .help()
-    .alias('help', 'h')
-    .argv;
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
 
-let nextToken;
-let chosenInterval = intervals.m;
-let end = start + (1000 * 60);
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
 
 
-const { query, interval, duration } = argv;
+// const yargs = require('yargs');
+// const { CronJob } = require('cron');
+// const knex = require('knex');
+// const knexConfig = require('./knexfile');
+// const db = knex(knexConfig.development);
 
-if ( query ) {
-    chosenQueries = [query];
-}
+// const { insertIntoTweetsTable, insertIntoReferencedTweetsTable, insertIntoTweetsMetricsTable } = require('./queries/insertQueries');
+// const { fetchTwitterGeoData } = require('./endpoint_calls/twitter_search_v2');
 
-if ( interval ) {
-    switch(interval){
-        case 's':
-            chosenInterval = intervals.s;
-            break;
-        case 'm':
-            chosenInterval = intervals.m;
-            break;
-        case 'h':
-            chosenInterval = intervals.h;
-            break;
-        default:
-            console.log('running cron every minute');
-    }
-}
+// const start = Date.now();
+// const intervals = {
+//     s: "* * * * * *",
+//     m: "* * * * *",
+//     h: "* * * *"
+// }
 
-if ( duration ) {
-    end = start + (1000 * 60 * duration);
-}
+// const argv = yargs
+//     .option('query', {
+//         description: 'query for twitter endpoint',
+//         alias: 'q',
+//         type: 'string'
+//     })
+//     .option('interval', {
+//         description: 'how often to run the cron',
+//         alias: 'i',
+//         type: 'string'
+//     })
+//     .option('duration', {
+//         description: 'duration in minutes to run collection for',
+//         alias: 'd',
+//         type: 'number'
+//     })
+//     .help()
+//     .alias('help', 'h')
+//     .argv;
 
-const job = new CronJob(
-    chosenInterval, 
-    function() {
-        // const query = 'point_radius:[-73.5673 45.5017 25mi] immigration'
-        const query = 'point_radius:[-123.1207 49.2827 25mi] chinese'
-        fetchTwitterGeoData(query, nextToken, true, '2015')
-            .then(async resp => {
+// let nextToken;
+// let chosenInterval = intervals.m;
+// let end = start + (1000 * 60);
 
-                if (resp.data.data) {
-                    await insertIntoTweetsTable(resp.data.data, query, db)
-                    .catch(err => {
-                        console.log(err)
-                    })
 
-                await insertIntoReferencedTweetsTable(resp.data.data, db)
-                .catch(err => {
-                    console.log(err)
-                })
+// const { query, interval, duration } = argv;
 
-                await insertIntoTweetsMetricsTable(resp.data.data, db)
-                    .catch(err => {
-                        console.log(err)
-                    })
+// if ( query ) {
+//     chosenQueries = [query];
+// }
 
-                }
-                if(resp.data.meta.next_token){
-                    nextToken = resp.data.meta.next_token
-                }
-            })
+// if ( interval ) {
+//     switch(interval){
+//         case 's':
+//             chosenInterval = intervals.s;
+//             break;
+//         case 'm':
+//             chosenInterval = intervals.m;
+//             break;
+//         case 'h':
+//             chosenInterval = intervals.h;
+//             break;
+//         default:
+//             console.log('running cron every minute');
+//     }
+// }
 
-        if(Date.now() > end){
-            db.destroy();
-            this.stop();
-        }
-    },
-    null,
-    true,
-    'America/Edmonton'
-)
+// if ( duration ) {
+//     end = start + (1000 * 60 * duration);
+// }
+
+// const job = new CronJob(
+//     chosenInterval, 
+//     function() {
+//         // const query = 'point_radius:[-73.5673 45.5017 25mi] immigration'
+//         const query = 'point_radius:[-123.1207 49.2827 25mi] chinese'
+//         fetchTwitterGeoData(query, nextToken, true, '2015')
+//             .then(async resp => {
+
+//                 if (resp.data.data) {
+//                     await insertIntoTweetsTable(resp.data.data, query, db)
+//                     .catch(err => {
+//                         console.log(err)
+//                     })
+
+//                 await insertIntoReferencedTweetsTable(resp.data.data, db)
+//                 .catch(err => {
+//                     console.log(err)
+//                 })
+
+//                 await insertIntoTweetsMetricsTable(resp.data.data, db)
+//                     .catch(err => {
+//                         console.log(err)
+//                     })
+
+//                 }
+//                 if(resp.data.meta.next_token){
+//                     nextToken = resp.data.meta.next_token
+//                 }
+//             })
+
+//         if(Date.now() > end){
+//             db.destroy();
+//             this.stop();
+//         }
+//     },
+//     null,
+//     true,
+//     'America/Edmonton'
+// )
