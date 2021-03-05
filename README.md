@@ -25,4 +25,5 @@ A research project in migrant sentiment
 $ docker-compose build
 $ docker-compose up
 $ docker-compose exec server yarn db:migrate
+$ docker-compose exec server ./node_modules/.bin/knex seed:run
 ```

@@ -1,13 +1,18 @@
 const express = require('express')
 const cors = require('cors')
-
 const app = express()
 const port = 8000
+
+const knex = require('knex');
+const knexConfig = require('./knexfile');
+const db = knex(knexConfig.development);
+const { getAllJobs } = require('./queries/pullQueries');
 
 app.use(cors())
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+    getAllJobs(db).then(res => console.log(res))
+    res.send('Hello World!')
 })
 
 app.listen(port, () => {
