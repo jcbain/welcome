@@ -5,6 +5,7 @@ const Wrapper = styled.div`
     position: relative;
     width: 90%;
     margin: 10px auto;
+    font-family: 'Lato', sans-serif;
 
 `
 const Header = styled.div`
@@ -22,9 +23,11 @@ const Header = styled.div`
 
 const Title = styled.div`
     position: absolute;
-    top: -10px;
+    top: -9px;
     left: 5px;
     background: white;
+    font-size: 12px;
+    padding-right: 1px;
 `
 
 const Selection = styled.p`
