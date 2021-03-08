@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 
 import DropDown from './DropDown';
+import useApplicationData from '../hooks/useApplicationData'
 
 const Container = styled.div`
     width: 100%;
@@ -19,35 +19,40 @@ const Form = styled.div`
     width: 100%;
     padding-top: 10px;
 `
-
-const dummyData = [
-    {id: 1, label: 'montreal'},
-    {id: 2, label: 'toronto'},
-    {id: 3, label: 'vancouver'},
-    {id: 4, label: 'calgary'}
-]
+const ButtonWrapper = styled.div`
+    width: 90%;
+    margin: 10px auto;
+    display: grid;
+    position: relative;
+    z-index: 90;
+`
+const Button = styled.button`
+    background: black;
+    color: white;
+    font-family: 'Lato', sans-serif;
+    font-weight: 800;
+    font-size: 1.5em;
+    border-radius: 5px;
+    border: none;
+    padding: 5px 10px;
+`
 
 const SelectionForm = () => {
-    const [ selectedIndex, setSelectedIndex ] = useState(1)
-
-    const selection = dummyData.find(d => d.id === selectedIndex)
-    const options = dummyData.filter(d => d.id !== selectedIndex)
+    const { loaded, selectedCity, setSelectedIndex, cityOptions, sendQuery } = useApplicationData();
 
     const makeSelection = (id) => {
         setSelectedIndex(id)
     }
 
-    useEffect(() => {
-        axios.get('http://localhost:8000')
-            .then(res => console.log(res))
-            .catch(err => console.log(err))
-    }, [])
-
     return (
         <Container>
             <FormWrapper>
                 <Form>
-                    <DropDown options={options} selection={selection.label} makeSelection={makeSelection}/>
+                    {loaded && <DropDown options={cityOptions} selection={selectedCity.city} makeSelection={makeSelection}/>}
+                <ButtonWrapper>
+
+                    {loaded && <Button onClick={sendQuery}>Send</Button>}
+                </ButtonWrapper>
                     
                 </Form>
 

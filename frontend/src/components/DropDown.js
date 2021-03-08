@@ -44,6 +44,8 @@ const Arrow = styled.div`
 const List = styled.div`
     position: absolute;
     width: 100%;
+    z-index: 100;
+    background: white;
 `
 
 const ListItem = styled.div`
@@ -71,7 +73,7 @@ const DropDown = ({ options, selection, makeSelection }) => {
     const optionItems = options.map( (o, i) => {
         return (
             <ListItem key={o.id} onClick={() => chooseSelection(o.id)}>
-                <Option>{o.label}</Option>
+                <Option>{o.city}</Option>
             </ListItem>
         )
     } )

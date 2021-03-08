@@ -8,11 +8,18 @@ const knexConfig = require('./knexfile');
 const db = knex(knexConfig.development);
 const { getAllJobs } = require('./queries/pullQueries');
 
-app.use(cors())
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-app.get('/', (req, res) => {
-    getAllJobs(db).then(res => console.log(res))
-    res.send('Hello World!')
+app.get('/jobs', async (req, res) => {
+    let data = await getAllJobs(db)
+    res.json(data)
+})
+
+app.post('/query', (req, res) => {
+  console.log(req.body)
+  res.send('success')
 })
 
 app.listen(port, () => {
