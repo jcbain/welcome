@@ -13,6 +13,7 @@ const FormWrapper = styled.div`
     max-width: 400px;
     margin: 0px auto;
     background: white;
+    padding: 20px;
 `
 
 const Form = styled.div`
@@ -20,14 +21,14 @@ const Form = styled.div`
     padding-top: 10px;
 `
 const ButtonWrapper = styled.div`
-    width: 90%;
+    width: 100%;
     margin: 10px auto;
     display: grid;
     position: relative;
     z-index: 90;
 `
 const Button = styled.button`
-    background: black;
+    background: linear-gradient(to left, ${({ theme }) => theme.sendButtonGradient1}, ${({ theme }) => theme.sendButtonGradient2});
     color: white;
     font-family: 'Lato', sans-serif;
     font-weight: 800;
@@ -47,14 +48,16 @@ const SelectionForm = () => {
     return (
         <Container>
             <FormWrapper>
-                <Form>
-                    {loaded && <DropDown options={cityOptions} selection={selectedCity.city} makeSelection={makeSelection}/>}
-                <ButtonWrapper>
+                {loaded && 
+                    <Form>
+                        <DropDown options={cityOptions} selection={selectedCity.city} makeSelection={makeSelection}/>
+                    <ButtonWrapper>
 
-                    {loaded && <Button onClick={sendQuery}>Send</Button>}
-                </ButtonWrapper>
-                    
-                </Form>
+                        <Button onClick={sendQuery}>Send</Button>
+                    </ButtonWrapper>
+                        
+                    </Form>
+                }
 
             </FormWrapper>
             

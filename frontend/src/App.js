@@ -1,7 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { ThemeProvider }from 'styled-components';
 
 import GlobalStyle from './theme/GlobalStyle';
+import useTheme from './hooks/useTheme';
 import SelectionForm from './components/SelectionForm'
 
 
@@ -12,12 +13,16 @@ const AppContainer = styled.div`
 `
 
 function App() {
-  return (
-    <AppContainer className="App">
-      <GlobalStyle />
-      <SelectionForm />
+  const { theme } = useTheme()
 
-    </AppContainer>
+  return (
+    <ThemeProvider theme={theme}>
+      <AppContainer className="App">
+        <GlobalStyle />
+        <SelectionForm />
+
+      </AppContainer>
+    </ThemeProvider>
   );
 }
 

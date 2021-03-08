@@ -23,7 +23,6 @@ const useApplicationData = () => {
         e.preventDefault();
         const params = { selectedCity }
 
-
         axios.post('http://localhost:8000/query', params)
             .then(resp => console.log(resp))
             .catch(err => console.log(err))
