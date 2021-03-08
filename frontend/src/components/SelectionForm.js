@@ -2,7 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 import DropDown from './DropDown';
-import useApplicationData from '../hooks/useApplicationData'
+import ParamSelector from './ParamSelector'
+import useApplicationData from '../hooks/useApplicationData';
+import useParamData from '../hooks/useParamData';
 
 const Container = styled.div`
     width: 100%;
@@ -40,6 +42,14 @@ const Button = styled.button`
 
 const SelectionForm = () => {
     const { loaded, selectedCity, setSelectedIndex, cityOptions, sendQuery } = useApplicationData();
+    const { paramData } = useParamData();
+
+    const paramSelectors = paramData.map( ( p, i ) => {
+        return (
+            <ParamSelector key={i} {...p}/>
+        )
+    })
+    console.log(paramData)
 
     const makeSelection = (id) => {
         setSelectedIndex(id)
@@ -51,10 +61,11 @@ const SelectionForm = () => {
                 {loaded && 
                     <Form>
                         <DropDown options={cityOptions} selection={selectedCity.city} makeSelection={makeSelection}/>
-                    <ButtonWrapper>
+                        { paramSelectors }
+                        <ButtonWrapper>
 
-                        <Button onClick={sendQuery}>Send</Button>
-                    </ButtonWrapper>
+                            <Button onClick={sendQuery}>Send</Button>
+                        </ButtonWrapper>
                         
                     </Form>
                 }

@@ -11,7 +11,9 @@ const colors = {
 
     },
     whites: {
-        white1: '#fff'
+        white1: '#fff',
+        white2: '#fafafa',
+        white3: '#f7f7f7'
 
     },
     blacks: {
@@ -28,6 +30,8 @@ const lightTheme = {
     dropDownArrowColor: colors.blacks.black1,
     dropDownHighLightGradient1: colors.purples.purple2,
     dropDownHighLightGradient2: colors.purples.purple1,
+    dropDownItemsColors: colors.whites.white2,
+    dropDownItemsBorder: colors.blacks.black2,
 
 }
 

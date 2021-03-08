@@ -12,28 +12,20 @@ const Wrapper = styled.div`
 const Header = styled.div`
     position: relative;
     display: grid;
-    grid-template-columns: 95% 5%;
+    grid-template-columns: 90% 10%;
     align-items: center;
-    height: 40px;
+    height: 30px;
     padding-left: 10px;
     padding-right: 10px;
-    height: 40px;
-`
-
-const Title = styled.div`
-    position: absolute;
-    top: -9px;
-    left: 10px;
-    background: white;
-    font-size: 12px;
-    padding-right: 1px;
+    height: 30px;
 `
 
 const Selection = styled.p`
     width: 100%;
+    font-size: 0.75em;
     margin-block-start: 0px;
     margin-block-end: 0px;
-    line-height: 40px;
+    line-height: 30px;
 
 `
 
@@ -43,7 +35,6 @@ const Arrow = styled.div`
 `
 
 const StyledUpArrow = styled(UpArrow)`
-    font-size: 0.5em;
     color: ${({ theme }) => theme.dropDownArrowColor};
 `
 
@@ -57,7 +48,7 @@ const List = styled.div`
 `
 
 const ListItem = styled.div`
-    height: 40px;
+    height: 30px;
     padding-left: 10px;
     padding-right: 10px;
     border-bottom: 0px solid white;
@@ -69,43 +60,42 @@ const ListItem = styled.div`
 `
 
 const Option = styled.p`
+    font-size: 0.75em;
     margin-block-start: 0px;
     margin-block-end: 0px;
-    line-height: 40px;
-
+    line-height: 30px;
 `
 
-const DropDown = ({ options, selection, makeSelection }) => {
+const MiniDropDown = ({selectedField, fieldOptions, setSelectedIndex}) => {
     const [ open, setOpen ] = useState(false);
 
     const chooseSelection = (id) => {
-        makeSelection(id)
+        setSelectedIndex(id)
         setOpen(false)
     }
 
-    const optionItems = options.map( (o, i) => {
+    const optionItems = fieldOptions.map( (o, i) => {
         return (
             <ListItem key={o.id} onClick={() => chooseSelection(o.id)}>
-                <Option>{o.city}</Option>
+                <Option>{o.label}</Option>
             </ListItem>
         )
     } )
 
-
     return (
         <Wrapper>
-            <Header>
-                <Title>location</Title>
-                <Selection>{selection}</Selection>
-                <Arrow onClick={() => setOpen(prev => !prev)}>{open ? <StyledUpArrow /> : <DownArrow /> }</Arrow>
-            </Header>
-            {open && <List>
-                    {optionItems}
-                </List>
-            }
+        <Header>
+            <Selection>{selectedField.label}</Selection>
+            <Arrow onClick={() => setOpen(prev => !prev)}>{open ? <StyledUpArrow /> : <DownArrow /> }</Arrow>
+        </Header>
+        {open && <List>
+                {optionItems}
+            </List>
+        }
 
-        </Wrapper>
+    </Wrapper>
+
     )
 }
 
-export default DropDown;
+export default MiniDropDown;
