@@ -32,6 +32,7 @@ const lightTheme = {
     dropDownHighLightGradient2: colors.purples.purple1,
     dropDownItemsColors: colors.whites.white2,
     dropDownItemsBorder: colors.blacks.black2,
+    plusButtonColor: colors.purples.purple1
 
 }
 

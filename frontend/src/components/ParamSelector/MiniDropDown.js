@@ -15,7 +15,6 @@ const Header = styled.div`
     grid-template-columns: 90% 10%;
     align-items: center;
     height: 30px;
-    padding-left: 10px;
     padding-right: 10px;
     height: 30px;
 `
@@ -26,6 +25,8 @@ const Selection = styled.p`
     margin-block-start: 0px;
     margin-block-end: 0px;
     line-height: 30px;
+    color: ${({ theme }) => theme.plusButtonColor};
+    font-weight: 800;
 
 `
 
