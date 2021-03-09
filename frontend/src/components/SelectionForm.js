@@ -42,14 +42,28 @@ const Button = styled.button`
 
 const SelectionForm = () => {
     const { loaded, selectedCity, setSelectedIndex, cityOptions, sendQuery } = useApplicationData();
-    const { paramData, modifyParam } = useParamData();
+    const { paramData, modifyParam, addParam, removeParam, modifyValue } = useParamData();
 
     const paramSelectors = paramData.map( ( p, i ) => {
         const handleParam = (id) => {
             modifyParam(i, id)
         } 
+
+        const handleRemove = () => {
+            removeParam(i)
+        }
+
+        const handleValueChange = (e) => {
+            modifyValue(i, e)
+        }
         return (
-            <ParamSelector key={i} handleParam={handleParam} {...p}/>
+            <ParamSelector key={i} 
+                addParam={addParam} 
+                handleParam={handleParam} 
+                isLast={i === paramData.length - 1} 
+                handleRemove={handleRemove} 
+                handleValueChange={handleValueChange} 
+                {...p}/>
         )
     })
     console.log(paramData)

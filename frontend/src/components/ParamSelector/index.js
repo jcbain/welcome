@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Plus } from '@styled-icons/boxicons-regular';
+import { Plus, Minus } from '@styled-icons/boxicons-regular';
 
 
 import MiniDropDown from './MiniDropDown';
@@ -37,12 +37,23 @@ const PlusDiv = styled.button`
     width: 25px;
     border-radius: 5px;
     margin-right: auto;
+    &.removebutton{
+        background: #ff9b94;
+
+    }
 `;
 
 
 const SmallPlus = styled(Plus)`
-    width: 15px;
+    width: 20px;
     color: white;
+    font-weight: bold;
+`
+
+const SmallMinus = styled(Minus)`
+    width: 25px;
+    color: white;
+    font-weight: bold;
 `
 
 const Input = styled.input`
@@ -56,17 +67,21 @@ const Input = styled.input`
 `
 
 
-const ParamSelector = ({...rest}) => {
+const ParamSelector = ({addParam, handleRemove, handleValueChange, isLast,...rest}) => {
+    const classLabel = !isLast && 'removebutton'
 
+    const handleChange = e => {
+        handleValueChange(e)
+    }
     return (
         <Wrapper>
             <ContentWrapper>
                 <MiniDropDown {...rest} />
-                <Input align="bottom" type="text" placeholder={"your dank query"}></Input>
-                <ButtonContainer>
+                <Input align="bottom" type="text" placeholder={"your dank query"} onChange={handleChange}></Input>
+                <ButtonContainer onClick={isLast ? addParam : handleRemove}>
 
-                    <PlusDiv>
-                        <SmallPlus />
+                    <PlusDiv className={classLabel}>
+                        {isLast ? <SmallPlus /> : <SmallMinus />}
                     </PlusDiv>
                 </ButtonContainer>
             </ContentWrapper>

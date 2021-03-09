@@ -75,6 +75,7 @@ const MiniDropDown = ({selection, options, handleParam}) => {
         setOpen(false)
     }
 
+
     const optionItems = options.map( (o, i) => {
         return (
             <ListItem key={o.id} onClick={() => chooseSelection(o.id)}>
