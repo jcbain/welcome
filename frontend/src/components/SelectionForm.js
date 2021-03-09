@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import DropDown from './DropDown';
 import ParamSelector from './ParamSelector';
+import Dates from './Dates';
 import EndpointDisplay from './EndpointDisplay';
 import useApplicationData from '../hooks/useApplicationData';
 import useParamData from '../hooks/useParamData';
@@ -44,9 +45,9 @@ const Button = styled.button`
 `
 
 const SelectionForm = () => {
-    const { loaded, selectedCity, setSelectedIndex, cityOptions, sendQuery } = useApplicationData();
+    const { loaded, selectedCity, setSelectedIndex, cityOptions, sendQuery, dates, handleDates } = useApplicationData();
     const { paramData, modifyParam, addParam, removeParam, modifyValue } = useParamData();
-    const endpoint = useSampleEndpoint(paramData, selectedCity)
+    const endpoint = useSampleEndpoint(paramData, selectedCity, dates)
     const paramSelectors = paramData.map( ( p, i ) => {
         const handleParam = (id) => {
             modifyParam(i, id)
@@ -80,6 +81,7 @@ const SelectionForm = () => {
                 {loaded && 
                     <Form>
                         <DropDown options={cityOptions} selection={selectedCity.city} makeSelection={makeSelection}/>
+                        <Dates handleDates={handleDates}/>
                         { paramSelectors }
                         <EndpointDisplay endpoint={endpoint}/>
                         <ButtonWrapper>

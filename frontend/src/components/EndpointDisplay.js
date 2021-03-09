@@ -22,7 +22,7 @@ const Title = styled.p`
     font-weight: 800;
     color: ${({ theme }) => theme.endpointBorderColor};
     position: absolute;
-    top: -2px;
+    top: 5px;
     left: 10px;
 `
 const CopyDiv = styled.div`
@@ -82,6 +82,7 @@ const ExpandButton = styled.button`
 const Notification = styled.div`
     font-size: .8em;
     position: absolute;
+    font-weight: 800;
     top: 20%;
     left: calc(50% - 95px);
     width: 150px;
@@ -122,7 +123,7 @@ const EndpointDisplay = ({endpoint}) => {
 
     return (
         <Wrapper className={classLabel}>
-            <Notification className={copyLabel}>Value copied to clipboard</Notification>
+            <Notification className={copyLabel}>copied to clipboard!</Notification>
             <Title>your endpoint</Title>
             <CopyDiv onClick={handleCopy}>
                 <StyledCopy />

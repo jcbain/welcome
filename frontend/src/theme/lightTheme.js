@@ -54,6 +54,7 @@ const lightTheme = {
     endpointFaderBackgroundColor3: hexRgbAlpha(colors.purples.purple4, '0'),
     endpointFaderBackgroundButton: hexRgbAlpha(colors.purples.purple4, '1'),
     notifyBoxColor: colors.blues.blue1,
+    calendarHighlights: colors.blues.blue1,
     sectionSpacer: '40px'
 
 }

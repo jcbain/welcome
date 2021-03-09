@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import moment from 'moment';
 
 const start = 'https://api.twitter.com/2/tweets/search/all?query='
 
@@ -10,8 +11,9 @@ const defaultTweetFields = [
 
 const tweetPayload = defaultTweetFields.join(',');
 
-const useSampleEndpoint = (params, city) => {
+const useSampleEndpoint = (params, city, dates) => {
     const [ endpoint, setEndpoint ] = useState()
+
 
     
     const paramStrings = params.map(p => {
@@ -19,6 +21,9 @@ const useSampleEndpoint = (params, city) => {
         return paramOption
     })
     const paramString = paramStrings.length === 1 && paramStrings[0] === '' ? `point_radius:[${city.lng} ${city.lat} 25mi]` : paramStrings.join(' OR ');
+
+    const startDate = dates.length === 2 ? moment(dates[0]).format('YYYY-MM-DD') : 'hello'
+    console.log(startDate)
 
     useEffect(() => {
         const fullString = `${start}${paramString}&tweet.fields=${tweetPayload}`
