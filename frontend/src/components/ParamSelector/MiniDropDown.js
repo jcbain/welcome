@@ -67,15 +67,15 @@ const Option = styled.p`
     line-height: 30px;
 `
 
-const MiniDropDown = ({selectedField, fieldOptions, setSelectedIndex}) => {
+const MiniDropDown = ({selection, options, handleParam}) => {
     const [ open, setOpen ] = useState(false);
 
     const chooseSelection = (id) => {
-        setSelectedIndex(id)
+        handleParam(id)
         setOpen(false)
     }
 
-    const optionItems = fieldOptions.map( (o, i) => {
+    const optionItems = options.map( (o, i) => {
         return (
             <ListItem key={o.id} onClick={() => chooseSelection(o.id)}>
                 <Option>{o.label}</Option>
@@ -86,7 +86,7 @@ const MiniDropDown = ({selectedField, fieldOptions, setSelectedIndex}) => {
     return (
         <Wrapper>
         <Header>
-            <Selection>{selectedField.label}</Selection>
+            <Selection>{selection.label}</Selection>
             <Arrow onClick={() => setOpen(prev => !prev)}>{open ? <StyledUpArrow /> : <DownArrow /> }</Arrow>
         </Header>
         {open && <List>
