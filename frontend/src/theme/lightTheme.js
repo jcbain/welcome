@@ -37,7 +37,6 @@ const colors = {
     }
 }
 
-console.log(hexRgbAlpha(colors.purples.purple4, '0.5'))
 const lightTheme = {
     sendButtonGradient1: colors.blues.blue1,
     sendButtonGradient2: colors.purples.purple1,
@@ -54,6 +53,8 @@ const lightTheme = {
     endpointFaderBackgroundColor2: hexRgbAlpha(colors.purples.purple4, '0.1'),
     endpointFaderBackgroundColor3: hexRgbAlpha(colors.purples.purple4, '0'),
     endpointFaderBackgroundButton: hexRgbAlpha(colors.purples.purple4, '1'),
+    notifyBoxColor: colors.blues.blue1,
+    sectionSpacer: '40px'
 
 }
 

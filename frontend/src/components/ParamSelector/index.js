@@ -7,7 +7,7 @@ import MiniDropDown from './MiniDropDown';
 
 const Wrapper = styled.div`
     width: 100%;
-    margin: 10px auto;
+    margin: ${({ theme }) => theme.sectionSpacer} auto;
 `
 
 const ContentWrapper = styled.div`

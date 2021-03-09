@@ -3,13 +3,13 @@ import { useState } from 'react';
 
 const stuff = {
     options: [    
-        {id: 1, label: 'from'},
-        {id: 2, label: 'conversation_id'},
-        {id: 3, label: '#'},
-        {id: 4, label: '$'},
-        {id: 5, label: 'string match'}
+        {id: 1, label: 'from', formatted: 'from:'},
+        {id: 2, label: 'conversation_id', formatted: 'conversation_id:'},
+        {id: 3, label: '#', formatted: '#'},
+        {id: 4, label: '$', formatted: '$'},
+        {id: 5, label: 'string match', formatted: ''}
     ],
-    selection: {id: 1, label: 'from'},
+    selection: {id: 5, label: 'string match', formatted: ''},
     value: ''
 }
 

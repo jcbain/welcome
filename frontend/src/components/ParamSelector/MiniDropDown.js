@@ -21,7 +21,7 @@ const Header = styled.div`
 
 const Selection = styled.p`
     width: 100%;
-    font-size: 0.75em;
+    font-size: 0.77em;
     margin-block-start: 0px;
     margin-block-end: 0px;
     line-height: 30px;

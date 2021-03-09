@@ -6,10 +6,11 @@ import ParamSelector from './ParamSelector';
 import EndpointDisplay from './EndpointDisplay';
 import useApplicationData from '../hooks/useApplicationData';
 import useParamData from '../hooks/useParamData';
+import useSampleEndpoint from '../hooks/useSampleEndpoint';
 
 const Container = styled.div`
     width: 100%;
-    background: black;
+    background: white;
 `;
 
 const FormWrapper = styled.div`
@@ -29,6 +30,7 @@ const ButtonWrapper = styled.div`
     display: grid;
     position: relative;
     z-index: 90;
+    margin-top: ${({ theme }) => theme.sectionSpacer};
 `
 const Button = styled.button`
     background: linear-gradient(to left, ${({ theme }) => theme.sendButtonGradient1}, ${({ theme }) => theme.sendButtonGradient2});
@@ -44,7 +46,7 @@ const Button = styled.button`
 const SelectionForm = () => {
     const { loaded, selectedCity, setSelectedIndex, cityOptions, sendQuery } = useApplicationData();
     const { paramData, modifyParam, addParam, removeParam, modifyValue } = useParamData();
-
+    const endpoint = useSampleEndpoint(paramData, selectedCity)
     const paramSelectors = paramData.map( ( p, i ) => {
         const handleParam = (id) => {
             modifyParam(i, id)
@@ -67,7 +69,6 @@ const SelectionForm = () => {
                 {...p}/>
         )
     })
-    console.log(paramData)
 
     const makeSelection = (id) => {
         setSelectedIndex(id)
@@ -80,7 +81,7 @@ const SelectionForm = () => {
                     <Form>
                         <DropDown options={cityOptions} selection={selectedCity.city} makeSelection={makeSelection}/>
                         { paramSelectors }
-                        <EndpointDisplay />
+                        <EndpointDisplay endpoint={endpoint}/>
                         <ButtonWrapper>
 
                             <Button onClick={sendQuery}>Send</Button>

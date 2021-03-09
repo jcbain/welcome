@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Copy } from '@styled-icons/boxicons-regular';
 
@@ -11,7 +11,8 @@ const Wrapper = styled.div`
     border: 1px solid ${({ theme }) => theme.endpointBorderColor};
     border-radius: 5px;
     background: ${({ theme }) => theme.endpointBackgroundColor};
-    height: 150px;
+    height: 125px;
+    margin-top: ${({ theme }) => theme.sectionSpacer};
     &.extended {
         height: 100%;
     }
@@ -58,6 +59,7 @@ const Fader = styled.div`
     width: 100%;
     background: linear-gradient(to bottom, ${({ theme }) => theme.endpointFaderBackgroundColor2}, ${({ theme }) => theme.endpointFaderBackgroundColor});
     height: 100px;
+    z-index: 80;
     &.no-fade{
         background: ${({ theme }) => theme.endpointFaderBackgroundColor3}
     }
@@ -65,7 +67,7 @@ const Fader = styled.div`
 
 const ExpandButton = styled.button`
     color: ${({ theme }) => theme.endpointBorderColor};
-    font-weight: 400;
+    font-weight: 700;
     border: 1px solid ${({ theme }) => theme.endpointBorderColor};
     border-bottom: 2px solid ${({ theme }) => theme.endpointBorderColor};
     /* margin-left: 90%; */
@@ -77,21 +79,57 @@ const ExpandButton = styled.button`
     padding: 2px 4px;
 `
 
-const EndpointDisplay = () => {
+const Notification = styled.div`
+    font-size: .8em;
+    position: absolute;
+    top: 20%;
+    left: calc(50% - 95px);
+    width: 150px;
+    margin: auto;    
+    background: white;
+    color: ${({ theme }) => theme.notifyBoxColor};
+    padding: 10px 20px;
+    border: 2px solid ${({ theme }) => theme.notifyBoxColor};
+    text-align: center;
+    border-radius: 5px;
+    z-index: 90;
+    opacity: 0;
+    transition: opacity 0.25s ease-out;
+    &.notify {
+        opacity: 1;
+    }
+`
+
+
+const EndpointDisplay = ({endpoint}) => {
     const [ extended, setExtended ] = useState(false);
+    const [ copyLabel, setCopyLabel ] = useState('')
     const classLabel = extended ? 'extended' : ''
     const faderClassLabel = extended ? 'no-fade': ''
 
+    useEffect(() => {
+        if(copyLabel === '') return;
+        const timer = setTimeout(() => {
+            setCopyLabel('')
+        }, 1500)
+        return () => clearTimeout(timer)
+    }, [copyLabel])
+
+    const handleCopy = () => {
+        setCopyLabel('notify')
+        navigator.clipboard.writeText(endpoint)
+    }
 
     return (
         <Wrapper className={classLabel}>
+            <Notification className={copyLabel}>Value copied to clipboard</Notification>
             <Title>your endpoint</Title>
-            <CopyDiv>
+            <CopyDiv onClick={handleCopy}>
                 <StyledCopy />
             </CopyDiv>
             <EndpointDiv>
                 <EndpointText>
-                https://api.twitter.com/2/tweets/search/all?query=from%3Atwitterdev%20endpoints%20new&max_results=500&start_time=2020-01-01T00%3A00%3A00Z&end_time=2020-03-31T11%3A59%3A59Z&tweet.fields=created_at,lang,conversation_id
+                    {endpoint}
                 </EndpointText>
 
             </EndpointDiv>
