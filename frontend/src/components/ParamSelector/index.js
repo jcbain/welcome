@@ -38,7 +38,7 @@ const PlusDiv = styled.button`
     border-radius: 5px;
     margin-right: auto;
     &.removebutton{
-        background: #ff9b94;
+        background: ${({ theme }) => theme.minusButtonColor};
 
     }
 `;

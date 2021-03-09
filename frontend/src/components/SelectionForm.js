@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 import DropDown from './DropDown';
-import ParamSelector from './ParamSelector'
+import ParamSelector from './ParamSelector';
+import EndpointDisplay from './EndpointDisplay';
 import useApplicationData from '../hooks/useApplicationData';
 import useParamData from '../hooks/useParamData';
 
@@ -79,11 +80,11 @@ const SelectionForm = () => {
                     <Form>
                         <DropDown options={cityOptions} selection={selectedCity.city} makeSelection={makeSelection}/>
                         { paramSelectors }
+                        <EndpointDisplay />
                         <ButtonWrapper>
 
                             <Button onClick={sendQuery}>Send</Button>
                         </ButtonWrapper>
-                        
                     </Form>
                 }
 
