@@ -22,14 +22,15 @@ const useSampleEndpoint = (params, city, dates) => {
     })
     const paramString = paramStrings.length === 1 && paramStrings[0] === '' ? `point_radius:[${city.lng} ${city.lat} 25mi]` : paramStrings.join(' OR ');
 
-    const startDate = dates.length === 2 ? moment(dates[0]).format('YYYY-MM-DD') : 'hello'
-    console.log(startDate)
+    const startDate = dates.length === 2 ? moment(dates[0]).format('YYYY-MM-DD') + 'T00:00:00Z' : '2015-01-01T00:00:00Z'
+    const endDate = dates.length === 2 ? moment(dates[1]).format('YYYY-MM-DD') + 'T00:00:00Z' : '2021-01-01T00:00:00Z'
+   
 
     useEffect(() => {
-        const fullString = `${start}${paramString}&tweet.fields=${tweetPayload}`
+        const fullString = `${start}${paramString}&start_time=${startDate}&end_time=${endDate}&tweet.fields=${tweetPayload}`
         setEndpoint(fullString)
 
-    }, [paramString, city])
+    }, [paramString, city, startDate, endDate])
 
     return endpoint
 }

@@ -84,7 +84,7 @@ const Notification = styled.div`
     position: absolute;
     font-weight: 800;
     top: 20%;
-    left: calc(50% - 95px);
+    left: calc(50% - 75px);
     width: 150px;
     margin: auto;    
     background: white;

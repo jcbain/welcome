@@ -4,6 +4,7 @@ import { DatePicker } from 'antd';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 
 const Wrapper = styled.div`
+    font-family: 'Lato', sans-serif;
     width: 100%;
     margin-top: ${({ theme }) => theme.sectionSpacer};
     margin-left: auto;
