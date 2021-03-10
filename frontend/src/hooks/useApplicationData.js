@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
+import moment from 'moment';
 import axios from 'axios';
 
-const useApplicationData = () => {
+const useApplicationData = (paramData) => {
+    const defaultDates = [ moment('2015/01/01'), moment('2020/01/01') ]
+
     const [ cities, setCities ] = useState([]);
-    const [ dates, setDates ] = useState([])
+    const [ dates, setDates ] = useState(defaultDates)
     const [ loaded, setLoaded ] = useState(false);
     const [ selectedIndex, setSelectedIndex ] = useState(1)
 
@@ -32,7 +35,7 @@ const useApplicationData = () => {
 
     const sendQuery = e => {
         e.preventDefault();
-        const params = { selectedCity }
+        const params = { selectedCity, paramData, dates }
 
         axios.post('http://localhost:8000/query', params)
             .then(resp => console.log(resp))
@@ -41,7 +44,7 @@ const useApplicationData = () => {
 
 
 
-    return {cities, loaded, selectedCity, cityOptions, setSelectedIndex, sendQuery, dates, handleDates}
+    return {cities, loaded, selectedCity, cityOptions, setSelectedIndex, sendQuery, dates, handleDates, defaultDates}
 }
 
 export default useApplicationData;

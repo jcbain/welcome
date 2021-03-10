@@ -17,12 +17,12 @@ const StyledRange = styled(DatePicker.RangePicker)`
 `
 
 
-const Dates = ({handleDates}) => {
+const Dates = ({handleDates, defaultDates}) => {
 
 
     return (
         <Wrapper>
-            <StyledRange onChange={handleDates}/>
+            <StyledRange defaultValue={defaultDates} onChange={handleDates}/>
         </Wrapper>
     )
 }
