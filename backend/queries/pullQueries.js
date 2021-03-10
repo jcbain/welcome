@@ -3,4 +3,9 @@ const getAllJobs = async(db) => {
     return data;
 }
 
-module.exports = { getAllJobs };
+const getAllQueries = async(db) => {
+    const data = await db.select().table('queries');
+    return data;
+}
+
+module.exports = { getAllJobs, getAllQueries };

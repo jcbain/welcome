@@ -42,13 +42,31 @@ const Button = styled.button`
     border-radius: 5px;
     border: none;
     padding: 5px 10px;
+    &.disabled {
+        opacity: 0.5;
+    }
+`
+
+const RunningMessage = styled.div`
+    font-family: 'Lato', sans-serif;
+    /* font-size: .9em; */
+    width: 100%;
+    text-align: center;
+    margin-top: ${({ theme }) => theme.sectionSpacer};
+    padding: 10px;
+    color: #ffc400;
+    border: 1px solid #ffc400;
+    border-radius: 5px;
+    background: #fff5d6;
 `
 
 const SelectionForm = () => {
     const { paramData, modifyParam, addParam, removeParam, modifyValue } = useParamData();
-    const { loaded, selectedCity, setSelectedIndex, cityOptions, sendQuery, dates, handleDates, defaultDates } = useApplicationData(paramData);
+    const { loaded, selectedCity, setSelectedIndex, cityOptions, sendQuery, dates, handleDates, defaultDates, runningStatus } = useApplicationData(paramData);
 
     const endpoint = useSampleEndpoint(paramData, selectedCity, dates)
+
+    const buttonClass = runningStatus ? 'disabled' : '';
     const paramSelectors = paramData.map( ( p, i ) => {
         const handleParam = (id) => {
             modifyParam(i, id)
@@ -85,9 +103,10 @@ const SelectionForm = () => {
                         <Dates handleDates={handleDates} defaultDates={defaultDates}/>
                         { paramSelectors }
                         <EndpointDisplay endpoint={endpoint}/>
+                        {runningStatus && <RunningMessage>a job is currently running</RunningMessage>}
                         <ButtonWrapper>
 
-                            <Button onClick={sendQuery}>Send</Button>
+                            <Button className={buttonClass} onClick={sendQuery} disabled={runningStatus}>Send</Button>
                         </ButtonWrapper>
                     </Form>
                 }

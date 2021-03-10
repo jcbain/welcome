@@ -8,43 +8,54 @@ const port = 8000
 const knex = require('knex');
 const knexConfig = require('./knexfile');
 const db = knex(knexConfig.development);
-const { getAllJobs } = require('./queries/pullQueries');
+const { getAllJobs, getAllQueries } = require('./queries/pullQueries');
 const { createEndpoint, fetchTweets } = require('./endpoint_calls/twitter_search_v2')
-const { insertIntoTweetsTable, insertIntoReferencedTweetsTable, insertIntoTweetsMetricsTable } = require('./queries/insertQueries');
+const { insertIntoTweetsTable, insertIntoReferencedTweetsTable, insertIntoTweetsMetricsTable, insertIntoQueriesTable } = require('./queries/insertQueries');
 
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+let runningStatus = false;
+
 app.get('/jobs', async (req, res) => {
     let data = await getAllJobs(db)
-    res.json(data)
+    res.json({data, runningStatus})
 })
 
-app.post('/query', (req, res) => {
-  // console.log(req.body)
+app.post('/query', async (req, res) => {
+  runningStatus = true;
   const { selectedCity, paramData, dates } = req.body;
-  // let nextToken;
-  // const endpoint = createEndpoint(paramData, selectedCity, nextToken, dates[0], dates[1])
-  // console.log(endpoint)
-
+  let nextToken;
+  const parentQuery = createEndpoint(paramData, selectedCity, nextToken, dates[0], dates[1])
   const start = Date.now();
   const end = start + (1000 * 60 * 2);
   const interval = "* * * * *";
-  let nextToken;
-  console.log(selectedCity)
-  res.send('success')
+  let queryId;
+  await db('queries').where('query', parentQuery).then(async rows => {
+    if(rows.length === 0) {
+      await insertIntoQueriesTable(parentQuery, db)
+        .then(response => {
+          queryId = response[0].id
+        })
+
+    } else {
+      queryId = rows[0].id
+    }
+  })
+  .catch(err => console.log(err))
+
+  // res.send('success')
+  res.json({runningStatus})
   const job = new CronJob(
     interval, 
     function() {
         const query = createEndpoint(paramData, selectedCity, nextToken, dates[0], dates[1])
-        // console.log(query)
         fetchTweets(query)
           .then(async resp => {
-            console.log(resp.data)
             if(resp.data.data) {
-              await insertIntoTweetsTable(resp.data.data, query, selectedCity.id, db)
+              await insertIntoTweetsTable(resp.data.data, queryId, selectedCity.id, db)
                 .catch(err => console.log(err))
 
               await insertIntoReferencedTweetsTable(resp.data.data, db)
@@ -60,40 +71,19 @@ app.post('/query', (req, res) => {
               if(resp.data.meta.next_token){
                 nextToken = resp.data.meta.next_token
               } else {
+                console.log('killing the job, no more data')
+                runningStatus = false;
                 this.stop();
               }
 
             }
           })
           .catch(err => console.log(err))
-        // fetchTwitterGeoData(query, nextToken, true, '2015')
-        //     .then(async resp => {
-
-        //         if (resp.data.data) {
-        //             await insertIntoTweetsTable(resp.data.data, query, db)
-        //             .catch(err => {
-        //                 console.log(err)
-        //             })
-
-        //         await insertIntoReferencedTweetsTable(resp.data.data, db)
-        //         .catch(err => {
-        //             console.log(err)
-        //         })
-
-        //         await insertIntoTweetsMetricsTable(resp.data.data, db)
-        //             .catch(err => {
-        //                 console.log(err)
-        //             })
-
-        //         }
-        //         if(resp.data.meta.next_token){
-        //             nextToken = resp.data.meta.next_token
-        //         }
-        //     })
 
         if(Date.now() > end){
-            // db.destroy();
-            this.stop();
+          console.log('killing the job, ran out of gas')
+          runningStatus = false;
+          this.stop();
         }
     },
     null,
@@ -105,111 +95,3 @@ app.post('/query', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
-
-
-// const yargs = require('yargs');
-// const { CronJob } = require('cron');
-// const knex = require('knex');
-// const knexConfig = require('./knexfile');
-// const db = knex(knexConfig.development);
-
-// const { insertIntoTweetsTable, insertIntoReferencedTweetsTable, insertIntoTweetsMetricsTable } = require('./queries/insertQueries');
-// const { fetchTwitterGeoData } = require('./endpoint_calls/twitter_search_v2');
-
-// const start = Date.now();
-// const intervals = {
-//     s: "* * * * * *",
-//     m: "* * * * *",
-//     h: "* * * *"
-// }
-
-// const argv = yargs
-//     .option('query', {
-//         description: 'query for twitter endpoint',
-//         alias: 'q',
-//         type: 'string'
-//     })
-//     .option('interval', {
-//         description: 'how often to run the cron',
-//         alias: 'i',
-//         type: 'string'
-//     })
-//     .option('duration', {
-//         description: 'duration in minutes to run collection for',
-//         alias: 'd',
-//         type: 'number'
-//     })
-//     .help()
-//     .alias('help', 'h')
-//     .argv;
-
-// let nextToken;
-// let chosenInterval = intervals.m;
-// let end = start + (1000 * 60);
-
-
-// const { query, interval, duration } = argv;
-
-// if ( query ) {
-//     chosenQueries = [query];
-// }
-
-// if ( interval ) {
-//     switch(interval){
-//         case 's':
-//             chosenInterval = intervals.s;
-//             break;
-//         case 'm':
-//             chosenInterval = intervals.m;
-//             break;
-//         case 'h':
-//             chosenInterval = intervals.h;
-//             break;
-//         default:
-//             console.log('running cron every minute');
-//     }
-// }
-
-// if ( duration ) {
-//     end = start + (1000 * 60 * duration);
-// }
-
-// const job = new CronJob(
-//     chosenInterval, 
-//     function() {
-//         // const query = 'point_radius:[-73.5673 45.5017 25mi] immigration'
-//         const query = 'point_radius:[-123.1207 49.2827 25mi] chinese'
-//         fetchTwitterGeoData(query, nextToken, true, '2015')
-//             .then(async resp => {
-
-//                 if (resp.data.data) {
-//                     await insertIntoTweetsTable(resp.data.data, query, db)
-//                     .catch(err => {
-//                         console.log(err)
-//                     })
-
-//                 await insertIntoReferencedTweetsTable(resp.data.data, db)
-//                 .catch(err => {
-//                     console.log(err)
-//                 })
-
-//                 await insertIntoTweetsMetricsTable(resp.data.data, db)
-//                     .catch(err => {
-//                         console.log(err)
-//                     })
-
-//                 }
-//                 if(resp.data.meta.next_token){
-//                     nextToken = resp.data.meta.next_token
-//                 }
-//             })
-
-//         if(Date.now() > end){
-//             db.destroy();
-//             this.stop();
-//         }
-//     },
-//     null,
-//     true,
-//     'America/Edmonton'
-// )

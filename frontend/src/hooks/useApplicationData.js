@@ -8,6 +8,7 @@ const useApplicationData = (paramData) => {
     const [ cities, setCities ] = useState([]);
     const [ dates, setDates ] = useState(defaultDates)
     const [ loaded, setLoaded ] = useState(false);
+    const [ runningStatus, setRunningStatus ] = useState(false)
     const [ selectedIndex, setSelectedIndex ] = useState(1)
 
     console.log(dates)
@@ -15,7 +16,8 @@ const useApplicationData = (paramData) => {
     useEffect(() => {
         axios.get('http://localhost:8000/jobs')
             .then(res => {
-                setCities(res.data)
+                setRunningStatus(res.data.runningStatus)
+                setCities(res.data.data)
                 setLoaded(true)
             })
             .catch(err => console.log(err))
@@ -38,13 +40,16 @@ const useApplicationData = (paramData) => {
         const params = { selectedCity, paramData, dates }
 
         axios.post('http://localhost:8000/query', params)
-            .then(resp => console.log(resp))
+            .then(resp => {
+                console.log(resp)
+                setRunningStatus(resp.data.runningStatus)
+            })
             .catch(err => console.log(err))
     }
 
 
 
-    return {cities, loaded, selectedCity, cityOptions, setSelectedIndex, sendQuery, dates, handleDates, defaultDates}
+    return {cities, loaded, selectedCity, cityOptions, setSelectedIndex, sendQuery, dates, handleDates, defaultDates, runningStatus}
 }
 
 export default useApplicationData;
