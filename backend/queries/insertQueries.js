@@ -1,7 +1,7 @@
 const { pick } = require('lodash')
 const { renameKeys, getGeo } = require('../utils/helpers');
 
-const cleanUpTweetsData = (data, query) => {
+const cleanUpTweetsData = (data, query, job_id) => {
     const mappedKeys =  {
         id: 'id',
         text: 'tweet_text',
@@ -19,17 +19,17 @@ const cleanUpTweetsData = (data, query) => {
             
         }
         const finalRow = pick(updatedObj, 'id', 'tweet_text', 'author_id', 'created_at', 'lat', 'lng', 'lng', 'possibly_sensitive')
-        cleanedData.push({...finalRow, query})
+        cleanedData.push({...finalRow, query, job_id})
     }
 
     return cleanedData;
 }
 
-const insertIntoTweetsTable = async (data, query, db) => {
+const insertIntoTweetsTable = async (data, query, job_id, db) => {
 
     console.log(`attempting to insert ${data.length} rows into the tweet table`)
 
-    const cleaned = cleanUpTweetsData(data, query)
+    const cleaned = cleanUpTweetsData(data, query, job_id)
     const inserted = await db('tweets')
         .insert(cleaned)
         .onConflict('id')

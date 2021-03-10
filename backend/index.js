@@ -1,5 +1,7 @@
 const express = require('express')
 const cors = require('cors')
+const { CronJob } = require('cron');
+
 const app = express()
 const port = 8000
 
@@ -7,6 +9,9 @@ const knex = require('knex');
 const knexConfig = require('./knexfile');
 const db = knex(knexConfig.development);
 const { getAllJobs } = require('./queries/pullQueries');
+const { createEndpoint, fetchTweets } = require('./endpoint_calls/twitter_search_v2')
+const { insertIntoTweetsTable, insertIntoReferencedTweetsTable, insertIntoTweetsMetricsTable } = require('./queries/insertQueries');
+
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -18,8 +23,83 @@ app.get('/jobs', async (req, res) => {
 })
 
 app.post('/query', (req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
+  const { selectedCity, paramData, dates } = req.body;
+  // let nextToken;
+  // const endpoint = createEndpoint(paramData, selectedCity, nextToken, dates[0], dates[1])
+  // console.log(endpoint)
+
+  const start = Date.now();
+  const end = start + (1000 * 60 * 2);
+  const interval = "* * * * *";
+  let nextToken;
+  console.log(selectedCity)
   res.send('success')
+  const job = new CronJob(
+    interval, 
+    function() {
+        const query = createEndpoint(paramData, selectedCity, nextToken, dates[0], dates[1])
+        // console.log(query)
+        fetchTweets(query)
+          .then(async resp => {
+            console.log(resp.data)
+            if(resp.data.data) {
+              await insertIntoTweetsTable(resp.data.data, query, selectedCity.id, db)
+                .catch(err => console.log(err))
+
+              await insertIntoReferencedTweetsTable(resp.data.data, db)
+                .catch(err => {
+                    console.log(err)
+                })
+
+              await insertIntoTweetsMetricsTable(resp.data.data, db)
+                .catch(err => {
+                  console.log(err)
+                })
+
+              if(resp.data.meta.next_token){
+                nextToken = resp.data.meta.next_token
+              } else {
+                this.stop();
+              }
+
+            }
+          })
+          .catch(err => console.log(err))
+        // fetchTwitterGeoData(query, nextToken, true, '2015')
+        //     .then(async resp => {
+
+        //         if (resp.data.data) {
+        //             await insertIntoTweetsTable(resp.data.data, query, db)
+        //             .catch(err => {
+        //                 console.log(err)
+        //             })
+
+        //         await insertIntoReferencedTweetsTable(resp.data.data, db)
+        //         .catch(err => {
+        //             console.log(err)
+        //         })
+
+        //         await insertIntoTweetsMetricsTable(resp.data.data, db)
+        //             .catch(err => {
+        //                 console.log(err)
+        //             })
+
+        //         }
+        //         if(resp.data.meta.next_token){
+        //             nextToken = resp.data.meta.next_token
+        //         }
+        //     })
+
+        if(Date.now() > end){
+            // db.destroy();
+            this.stop();
+        }
+    },
+    null,
+    true,
+    'America/Edmonton'
+)
 })
 
 app.listen(port, () => {

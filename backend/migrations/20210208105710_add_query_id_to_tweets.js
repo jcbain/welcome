@@ -1,7 +1,7 @@
 
 exports.up = function(knex, Promise) {
     return knex.schema.table('tweets', t => {
-        t.string('query');
+        t.text('query');
     });
 };
 

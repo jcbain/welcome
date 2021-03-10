@@ -36,5 +36,30 @@ const fetchTwitterGeoData = async (query, nextToken, all = false, starting = '20
     return response;
 }
 
+const createEndpoint = (params, city, nextToken, startDate, endDate, tweetFields = defaultTweetFields) => {
+    const startEndpoint = 'https://api.twitter.com/2/tweets/search/all?query='
+    const cityQuery = `point_radius:[${city.lng} ${city.lat} 25mi]`
+    const paramStrings = params.map(p => {
+        const param = p.value !== '' ? `(${cityQuery} ${p.selection.formatted}${p.value})` : '';
+        return param
+    })
+    const query = paramStrings.length === 1 && paramStrings[0] === '' ? cityQuery : paramStrings.join(' OR ')
+    const next = nextToken ? `&next_token=${nextToken}` : '';
+    const start = `&start_time=${startDate}`;
+    const end = `&end_time=${endDate}`;
+    const tweetPayload = tweetFields.join(',');
 
-module.exports = { fetchTwitterData, fetchTwitterGeoData };
+    const endpoint = `${startEndpoint}${query}${next}${start}${end}&tweet.fields=${tweetPayload}`
+
+    return endpoint
+
+}
+
+const fetchTweets = async (endpoint) => {
+    const response = await axios.get(endpoint, headers);
+    return response
+    
+}
+
+
+module.exports = { fetchTwitterData, fetchTwitterGeoData, createEndpoint, fetchTweets };
