@@ -49,7 +49,7 @@ const createEndpoint = (params, city, nextToken, startDate, endDate, tweetFields
     const end = `&end_time=${endDate}`;
     const tweetPayload = tweetFields.join(',');
 
-    const endpoint = `${startEndpoint}${query}${next}${start}${end}&tweet.fields=${tweetPayload}`
+    const endpoint = `${startEndpoint}${query}${next}${start}${end}&max_results=50&tweet.fields=${tweetPayload}`
 
     return endpoint
 
