@@ -11,6 +11,7 @@ const db = knex(knexConfig.development);
 const { getAllJobs, getAllQueries } = require('./queries/pullQueries');
 const { createEndpoint, fetchTweets } = require('./endpoint_calls/twitter_search_v2')
 const { insertIntoTweetsTable, insertIntoReferencedTweetsTable, insertIntoTweetsMetricsTable, insertIntoQueriesTable } = require('./queries/insertQueries');
+const { organizeQueryForQueryTable } = require('./utils/helpers')
 
 
 app.use(cors());
@@ -28,9 +29,9 @@ app.post('/query', async (req, res) => {
   runningStatus = true;
   const { selectedCity, paramData, dates } = req.body;
   let nextToken;
-  const parentQuery = createEndpoint(paramData, selectedCity, nextToken, dates[0], dates[1])
+  const parentQuery = organizeQueryForQueryTable(paramData, selectedCity)
   const start = Date.now();
-  const end = start + (1000 * 60 * 2);
+  const end = start + (1000 * 60 * 60);
   const interval = "* * * * *";
   let queryId;
   await db('queries').where('query', parentQuery).then(async rows => {
@@ -89,6 +90,7 @@ app.post('/query', async (req, res) => {
     null,
     true,
     'America/Edmonton'
+    
 )
 })
 
