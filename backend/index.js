@@ -90,7 +90,6 @@ app.post('/query', async (req, res) => {
     null,
     true,
     'America/Edmonton'
-    
 )
 })
 
